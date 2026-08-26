@@ -10,7 +10,6 @@ if (!response.ok){
 }
 const data =await response.json() as T;
 return data
-
 }
 async function dataEngine(){
     const userData =fetchData<User[]>(USERS_API)
@@ -34,7 +33,6 @@ const comments = processResult<Comments[]>(commentsResult, 'Comments');
     return { users, posts, comments };
 
 }
-
 dataEngine().then((data)=>{
     console.log('Users count:', data.users.length); 
     console.log('Posts count:', data.posts.length);
