@@ -1,10 +1,4 @@
-type User = {
-  id: number;
-  name: string;
-  email: string;
-  role: "admin" | "user" | "manager";
-};
-
+import type { User } from "../types/types.js";
 export const users: User[] = [
   { id: 1, name: "Ahmed", email: "ahmed@gmail.com", role: "admin" },
   { id: 2, name: "Emad", email: "emad@gmail.com", role: "user" },
