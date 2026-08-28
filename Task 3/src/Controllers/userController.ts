@@ -53,8 +53,8 @@ const addUser = (req: Request, res: Response, next: NextFunction) => {
 };
 const updateUser = (req: Request, res: Response, next: NextFunction) => {
   const userId: number = Number(req.params.id);
-  const { name, email } = req.body;
-  const updatedUser = updateUserById(userId, { name, email });
+  const { name, email, password } = req.body;
+  const updatedUser = updateUserById(userId, { name, email, password });
   res.status(200).json({
     status: SUCCESS,
     data: updatedUser,

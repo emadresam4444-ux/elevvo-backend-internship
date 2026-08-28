@@ -11,7 +11,7 @@ const createUser = (user: User) => {
 };
 const updateUserById = (
   id: number,
-  payload: { name: string; email: string },
+  payload: { name: string; email: string; password: string },
 ) => {
   const user = users.find((user) => user.id === id);
   if (!user) {
@@ -19,6 +19,7 @@ const updateUserById = (
   }
   user.name = payload.name;
   user.email = payload.email;
+  user.password = payload.password;
   return user;
 };
 
