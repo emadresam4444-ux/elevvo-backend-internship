@@ -1,10 +1,10 @@
-import { FAIL, SUCCESS } from "../utils/HttpStatusText";
+import { ERROR, FAIL, SUCCESS } from "../utils/HttpStatusText";
 import type { Request, Response, NextFunction } from "express";
 import { asyncWrapper } from "./../utils/asyncWrapper";
 import User from "../model/user";
 import bcrypt from "bcrypt";
 import AppError from "../utils/AppError";
-
+import jwt from "jsonwebtoken";
 const register = asyncWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
     const { name, email, password } = req.body;
@@ -12,15 +12,28 @@ const register = asyncWrapper(
     if (existUser) {
       return next(new AppError("user already exist", 400, FAIL));
     }
-    const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({
       name,
       email,
-      password: hashedPassword,
+      password,
     });
+    if (!process.env.JWT_SECRET_KEY) {
+      return next(
+        new AppError(
+          "JWT_SECRET_KEY is not defined in environment variables",
+          500,
+          ERROR,
+        ),
+      );
+    }
+    const token = jwt.sign(
+      { id: user._id, email: user.email, role: user.role },
+      process.env.jWT_SECRET_KEY as string,
+    );
     res.status(201).json({
       status: SUCCESS,
       data: { name, email },
+      token,
     });
   },
 );
@@ -36,14 +49,18 @@ const login = asyncWrapper(
       return next(new AppError("Invalid email or password", 400, FAIL));
     }
     const validPassword = await bcrypt.compare(password, user.password);
-    console.log(validPassword);
 
     if (!validPassword) {
       return next(new AppError("Invalid email or password", 400, FAIL));
     }
+
+    const token = jwt.sign(
+      { id: user._id, email: user.email, role: user.role },
+      process.env.jWT_SECRET_KEY as string,
+    );
     res.status(200).json({
       status: SUCCESS,
-      token: {},
+      token,
     });
   },
 );

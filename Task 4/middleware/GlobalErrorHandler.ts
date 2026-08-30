@@ -6,7 +6,7 @@ export function globalErrorHandler(
   next: NextFunction,
 ) {
   const statusCode = err.statusCode || 500;
-  const status = err.status || "error";
+  const status = err.statusText || "error";
   res.status(statusCode).json({
     status,
     message: err.message || "Internal Server Error",
