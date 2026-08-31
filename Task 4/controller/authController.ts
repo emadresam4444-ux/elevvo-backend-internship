@@ -1,7 +1,7 @@
 import { ERROR, FAIL, SUCCESS } from "../utils/HttpStatusText";
 import type { Request, Response, NextFunction } from "express";
-import { asyncWrapper } from "./../utils/asyncWrapper";
-import User from "../model/user";
+import { asyncWrapper } from "../utils/asyncWrapper";
+import User from "../model/userModel";
 import bcrypt from "bcrypt";
 import AppError from "../utils/AppError";
 import jwt from "jsonwebtoken";
@@ -28,7 +28,10 @@ const register = asyncWrapper(
     }
     const token = jwt.sign(
       { id: user._id, email: user.email, role: user.role },
-      process.env.jWT_SECRET_KEY as string,
+      process.env.JWT_SECRET_KEY as string,
+      {
+        expiresIn: "1h",
+      },
     );
     res.status(201).json({
       status: SUCCESS,
@@ -56,7 +59,8 @@ const login = asyncWrapper(
 
     const token = jwt.sign(
       { id: user._id, email: user.email, role: user.role },
-      process.env.jWT_SECRET_KEY as string,
+      process.env.JWT_SECRET_KEY as string,
+      { expiresIn: "1h" },
     );
     res.status(200).json({
       status: SUCCESS,
