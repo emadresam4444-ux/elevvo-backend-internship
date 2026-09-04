@@ -7,12 +7,16 @@ import {
   getUsers,
   updateUser,
 } from "../controller/userController";
-
+import { authenticateToken } from "../middleware/authenticateToken";
 const router = express.Router();
 
 router.route("/register").post(register);
 router.route("/login").post(login);
-router.route("/").get(getUsers).post(createUser);
-router.route("/:id").get(getUserById).patch(updateUser).delete(deleteUser);
+router.route("/").get(authenticateToken, getUsers).post(createUser);
+router
+  .route("/:id")
+  .get(authenticateToken, getUserById)
+  .patch(authenticateToken, updateUser)
+  .delete(authenticateToken, deleteUser);
 
 export default router;

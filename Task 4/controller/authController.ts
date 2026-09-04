@@ -46,11 +46,17 @@ const login = asyncWrapper(
     if (!email || !password) {
       return next(new AppError("Please provide email and password", 400, FAIL));
     }
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("+password");
 
     if (!user) {
       return next(new AppError("Invalid email or password", 400, FAIL));
     }
+
+    console.log("================");
+    console.log("password", password);
+    console.log("user.password", user.password);
+    console.log("================");
+
     const validPassword = await bcrypt.compare(password, user.password);
 
     if (!validPassword) {

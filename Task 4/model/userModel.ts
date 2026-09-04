@@ -6,7 +6,6 @@ export interface IUser {
   password: string;
   role: "user" | "admin";
 }
-
 const userSchema = new Schema<IUser>(
   {
     name: {
@@ -25,6 +24,7 @@ const userSchema = new Schema<IUser>(
       type: String,
       required: true,
       minlength: 6,
+      select: false,
     },
     role: {
       type: String,
